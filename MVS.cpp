@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-
+#include "camera_calibration.h"
 
 int _tmain(int argc, _TCHAR* argv[])
 {
