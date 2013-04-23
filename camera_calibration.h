@@ -1,1 +1,1 @@
-int mainCalib(int argc, char* settingsFile);
+int mainCalib(char* settingsFile);
