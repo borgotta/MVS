@@ -77,14 +77,18 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="camera_calibration.h" />
     <ClInclude Include="DataContainer.h" />
+    <ClInclude Include="Photo.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="camera_calibration.cpp" />
+    <ClCompile Include="Photo.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="MVS.cpp" />
     <ClCompile Include="stdafx.cpp">
