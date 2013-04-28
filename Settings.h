@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+#include "DataContainer.h"
 
 #include <iostream>
 #include <sstream>
@@ -23,6 +24,8 @@ public:
     void write(FileStorage& fs) const;                      //Write serialization for this class
 
     void read(const FileNode& node);                          //Read serialization for this class
+
+	bool loadImages(DataContainer &dc);
 
     void interprate();
 

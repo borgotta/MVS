@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+#include "Photo.h"
 
 #include <iostream>
 #include <sstream>
@@ -13,14 +14,14 @@ using namespace std;
 class DataContainer
 {
 public:
-	DataContainer(vector<string> iL, vector<string> tL) : imageList(iL), txtList(tL) {
-	}
+	DataContainer(void) {	}
 
-	virtual int size();
-	virtual Mat getImage(const int i);
-	virtual Mat getProjMat(const int i);
+	void init(vector<Mat> iL, vector<Mat> tL);
 
-	vector<string> imageList;
-	vector<string> txtList;
+	int size();
+	Mat getImage(const int i);
+	Mat getPhoto(const int i);
+
+	vector<Photo> photoList;
 };
 
