@@ -9,6 +9,8 @@ public:
 	Photo(void);
 	virtual ~Photo(void);
 
+	void init(const std::string iname, const std::string cname, const int maxLevel);
+
 	int getWidth();
 	int getHight();
 

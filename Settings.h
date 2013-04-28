@@ -21,32 +21,34 @@ public:
 	~Settings(void);
 	public:
 
-    void write(FileStorage& fs) const;                      //Write serialization for this class
+	void write(FileStorage& fs) const;                      //Write serialization for this class
 
-    void read(const FileNode& node);                          //Read serialization for this class
+	void read(const FileNode& node);                          //Read serialization for this class
 
-	bool loadImages(DataContainer &dc);
+	bool loadPhotos(const DataContainer &dc);
 
-    void interprate();
+	void interprate();
 
-    Mat nextImage();
+	Mat nextImage();
 
 	//double * nextMat();
 
-    static bool readStringLists( const string& filename, vector<string>& images, vector<string>& txts);
+	static bool readStringLists( const string& filename, vector<string>& images, vector<string>& txts);
 
 public:
 
-    string outputFileName;      // The name of the file where to write
-    string input;               // The input ->
+	string outputFileName;      // The name of the file where to write
+	string input;               // The input ->
 
-    vector<string> imageList;
+	vector<string> imageList;
 	vector<string> txtList;
-    bool goodInput;
-    int flag;
+	bool goodInput;
+	int flag;
+	DataContainer data;
+	
 
 private:
-    string patternToUse;
+	string patternToUse;
 
 };
 void read(const FileNode& node, Settings& x, const Settings& default_value);

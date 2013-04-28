@@ -37,7 +37,9 @@ public:
 
 	float m_ipscale;
 	// 3x4 projection matrix
-	std::vector<std::vector<Vec4f> > m_projection;
+	//std::vector<std::vector<Vec4f> > m_projection;
+	Mat m_projection;
+
 	Vec3f m_xaxis;
 	Vec3f m_yaxis;
 	Vec3f m_zaxis;

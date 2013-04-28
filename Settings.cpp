@@ -52,7 +52,7 @@ bool Settings::readStringLists( const string& filename, vector<string>& images, 
 	}
 	catch (Exception e) {
 		cout << "Caught exception number:  " << e.code << endl;
-    return false;
+	return false;
 	}
 	return true;
 }
@@ -61,7 +61,19 @@ void Settings::interprate() {
 		goodInput = false;
 		return;
 	}
+	if (!loadPhotos(data)) {
+		goodInput = false;
+		return;
+	}
 	goodInput = true; //TODO implement, mock for now
+}
+bool Settings::loadPhotos(const DataContainer &dt) {
+	if (imageList.empty() || txtList.empty()) {
+		return false;
+	}
+	data.init(imageList,txtList);
+	return true;
+
 }
 Settings::~Settings(void)
 {

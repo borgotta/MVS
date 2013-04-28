@@ -18,15 +18,17 @@ int _tmain(int argc, char* argv[])
 		path = "xml\\default.xml";
 	}
 	const string constpath = path;
-    FileStorage fs(constpath, FileStorage::READ); // Read the settings
-    if (!fs.isOpened())
-    {
-        cout << "Could not open the configuration file: \"" << path << "\"" << endl;
-        return -1;
-    }
-    fs["Settings"] >> settings;
-    fs.release(); 
+	FileStorage fs(constpath, FileStorage::READ); // Read the settings
+	if (!fs.isOpened())
+	{
+		cout << "Could not open the configuration file: \"" << path << "\"" << endl;
+		return -1;
+	}
+	fs["Settings"] >> settings;
+	fs.release(); 
 	
+	//loading images(photos)
+
 	cout<<path<<"\n"<<settings.imageList.size()<<"\n";
 	return 0;
 }

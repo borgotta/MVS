@@ -59,6 +59,9 @@
     <ClCompile Include="Photo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DataContainer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MVS.rc">

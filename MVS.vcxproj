@@ -88,6 +88,7 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="camera_calibration.cpp" />
+    <ClCompile Include="DataContainer.cpp" />
     <ClCompile Include="Photo.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="MVS.cpp" />

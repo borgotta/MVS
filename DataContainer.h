@@ -16,11 +16,11 @@ class DataContainer
 public:
 	DataContainer(void) {	}
 
-	void init(vector<Mat> iL, vector<Mat> tL);
+	void init(const vector<string> &iL, const vector<string> &tL);
 
 	int size();
 	Mat getImage(const int i);
-	Mat getPhoto(const int i);
+	Photo getPhoto(const int i);
 
 	vector<Photo> photoList;
 };
