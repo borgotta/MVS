@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DataContainer.h"
 
+using namespace MVS;
 
 Photo DataContainer::getPhoto(int i) {
 	return photoList[i];

@@ -14,42 +14,44 @@
 using namespace cv;
 using namespace std;
 
-class Settings
-{
-public:
-	Settings(void): goodInput(false) {}
-	~Settings(void);
+namespace MVS {
+	class Settings
+	{
+	public:
+		Settings(void): goodInput(false) {}
+		~Settings(void);
 	public:
 
-	void write(FileStorage& fs) const;                      //Write serialization for this class
+		void write(FileStorage& fs) const;                      //Write serialization for this class
 
-	void read(const FileNode& node);                          //Read serialization for this class
+		void read(const FileNode& node);                          //Read serialization for this class
 
-	bool loadPhotos(const DataContainer &dc);
+		bool loadPhotos(const DataContainer &dc);
 
-	void interprate();
+		void interprate();
 
-	Mat nextImage();
+		Mat nextImage();
 
-	//double * nextMat();
+		//double * nextMat();
 
-	static bool readStringLists( const string& filename, vector<string>& images, vector<string>& txts);
+		static bool readStringLists( const string& filename, vector<string>& images, vector<string>& txts);
 
-public:
+	public:
 
-	string outputFileName;      // The name of the file where to write
-	string input;               // The input ->
+		string outputFileName;      // The name of the file where to write
+		string input;               // The input ->
 
-	vector<string> imageList;
-	vector<string> txtList;
-	bool goodInput;
-	int flag;
-	DataContainer data;
-	
+		vector<string> imageList;
+		vector<string> txtList;
+		bool goodInput;
+		int flag;
+		DataContainer data;
 
-private:
-	string patternToUse;
 
+	private:
+		string patternToUse;
+
+	};
+	void read(const FileNode& node, Settings& x, const Settings& default_value);
+	void write(FileStorage& fs, const std::string&, const Settings& x);
 };
-void read(const FileNode& node, Settings& x, const Settings& default_value);
-void write(FileStorage& fs, const std::string&, const Settings& x);

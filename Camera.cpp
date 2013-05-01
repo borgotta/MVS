@@ -4,6 +4,8 @@
 #include <ios>
 #include <fstream>
 
+using namespace MVS;
+
 Camera::Camera(void)
 {
 }
