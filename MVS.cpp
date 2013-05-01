@@ -30,6 +30,9 @@ int _tmain(int argc, char* argv[])
 	//loading images(photos)
 
 	cout<<path<<"\n"<<settings.imageList.size()<<"\n";
+	namedWindow( "Display window", CV_WINDOW_AUTOSIZE );// Create a window for display.
+	imshow( "Display window", settings.data.getPhoto(4).image );   
+	waitKey(0);
 	return 0;
 }
 

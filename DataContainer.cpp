@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "DataContainer.h"
 
+
+Photo DataContainer::getPhoto(int i) {
+	return photoList[i];
+}
 void DataContainer::init(const vector<string> &iL, const vector<string> &tL) {
 	int size = 0;
 	if (iL.size() > tL.size()) {

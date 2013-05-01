@@ -31,13 +31,29 @@ void Camera::init(const std::string cname, const int maxLevel) {
 		cerr << "Unrecognizable txt format" << endl;
 		exit (1);
 	}
-	Mat temp = Mat::eye(3,4,CV_64F);
+	m_projection = Mat::eye(3,4,CV_64F);
+	m_intrinsics = Mat::eye(3,3,CV_64F);
+	m_extrinsics = Mat::eye(3,4,CV_64F);
+
+	//instinsics 
+	for (int i=0; i<3; i++) 
+		for (int j=0; j<3; j++) 
+			ifstr >> m_intrinsics.at<double>(i,j);
+	//extrinsics
+
 	for (int i=0; i<3; i++) {
-		for (int j=0; j<4; j++) {
-			ifstr >> temp.at<double>(i,j);
-		}}
-	m_projection = temp.clone();
-	temp.release();
+		for (int j=0; j<3; j++) 
+			ifstr >> m_extrinsics.at<double>(i,j);
+		ifstr >> m_extrinsics.at<double>(i,3);
+	}
+
+	//TODO fill projection matrix
+	//for (int i=0; i<3; i++) {
+	//	for (int j=0; j<4; j++) {
+	//		ifstr >> temp.at<double>(i,j);
+	//	}}
+	//m_projection = temp.clone();
+	//temp.release();
 
 	//for (int i = 0; i < 6; ++i)
 	//	ifstr >> m_intrinsics[i];

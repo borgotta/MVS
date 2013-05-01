@@ -40,13 +40,16 @@ public:
 	//std::vector<std::vector<Vec4f> > m_projection;
 	Mat m_projection;
 
+	// intrinsic and extrinsic camera parameters. Compact form.
+	Mat m_intrinsics;;
+	Mat m_extrinsics;
+
+
 	Vec3f m_xaxis;
 	Vec3f m_yaxis;
 	Vec3f m_zaxis;
 
-	// intrinsic and extrinsic camera parameters. Compact form.
-	std::vector<float> m_intrinsics;
-	std::vector<float> m_extrinsics;
+
 
 protected:
 	int m_maxLevel;

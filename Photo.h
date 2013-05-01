@@ -20,6 +20,9 @@ public:
 	inline int getMask(const Vec4f& coord, const int level) const;
 	inline int getEdge(const Vec4f& coord, const int level) const;
 
+	//ordered number
+	int n;
+
 	Mat image;
 };
 
