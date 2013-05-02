@@ -1,7 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
-#include "DataContainer.h"
+#include "PhotoSet.h"
 
 #include <iostream>
 #include <sstream>
@@ -26,7 +26,7 @@ namespace MVS {
 
 		void read(const FileNode& node);                          //Read serialization for this class
 
-		bool loadPhotos(const DataContainer &dc);
+		bool loadPhotos(const PhotoSet &dc);
 
 		void interprate();
 
@@ -45,7 +45,8 @@ namespace MVS {
 		vector<string> txtList;
 		bool goodInput;
 		int flag;
-		DataContainer data;
+		PhotoSet data;
+		int CPU;
 
 
 	private:

@@ -1,18 +1,21 @@
 #include "StdAfx.h"
 #include "Settings.h"
 
+using namespace MVS;
 
 void Settings:: write(FileStorage& fs) const                        //Write serialization for this class
 {
 	fs << "{" 
 		<< "Write_outputFileName"  << outputFileName
 		<< "Input" << input
+		<< "CPU" << CPU
 		<< "}";
 }
 void Settings:: read(const FileNode& node)                          //Read serialization for this class
 {
 	node["Write_outputFileName"] >> outputFileName;
 	node["Input"] >> input;
+	node["CPU"] >> CPU;
 
 	interprate();
 }

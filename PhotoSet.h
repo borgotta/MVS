@@ -11,10 +11,10 @@
 using namespace cv;
 using namespace std;
 namespace MVS {
-	class DataContainer
+	class PhotoSet
 	{
 	public:
-		DataContainer(void) {	}
+		PhotoSet(void) {	}
 
 		void init(const vector<string> &iL, const vector<string> &tL);
 

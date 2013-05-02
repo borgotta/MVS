@@ -3,6 +3,8 @@
 
 #include <opencv2/highgui/highgui.hpp>
 
+using namespace MVS;
+
 Photo::Photo(void)
 {
 }

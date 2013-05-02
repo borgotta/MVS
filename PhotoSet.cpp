@@ -1,12 +1,12 @@
 #include "stdafx.h"
-#include "DataContainer.h"
+#include "PhotoSet.h"
 
 using namespace MVS;
 
-Photo DataContainer::getPhoto(int i) {
+Photo PhotoSet::getPhoto(int i) {
 	return photoList[i];
 }
-void DataContainer::init(const vector<string> &iL, const vector<string> &tL) {
+void PhotoSet::init(const vector<string> &iL, const vector<string> &tL) {
 	int size = 0;
 	if (iL.size() > tL.size()) {
 		size = tL.size();
