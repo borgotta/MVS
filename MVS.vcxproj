@@ -80,6 +80,9 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="camera_calibration.h" />
     <ClInclude Include="DetectFeatures.h" />
+    <ClInclude Include="Detector.h" />
+    <ClInclude Include="Dog.h" />
+    <ClInclude Include="Harris.h" />
     <ClInclude Include="PhotoSet.h" />
     <ClInclude Include="Photo.h" />
     <ClInclude Include="Point.h" />
@@ -90,6 +93,10 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="camera_calibration.cpp" />
+    <ClCompile Include="DetectFeatures.cpp" />
+    <ClCompile Include="Detector.cpp" />
+    <ClCompile Include="Dog.cpp" />
+    <ClCompile Include="Harris.cpp" />
     <ClCompile Include="PhotoSet.cpp" />
     <ClCompile Include="Photo.cpp" />
     <ClCompile Include="Point.cpp" />

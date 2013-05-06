@@ -3,6 +3,6 @@
 <Settings>
   <Input>"VID5.xml"</Input>
   <Write_outputFileName>"out1.xml"</Write_outputFileName>
-  <CPU>4</CPU>
+  <CPU>"4"</CPU>
 </Settings>
 </opencv_storage>

@@ -18,5 +18,7 @@ void PhotoSet::init(const vector<string> &iL, const vector<string> &tL) {
 		temp.init(iL[i], tL[i], 0);
 		photoList[i] = temp;
 	}
-
+}
+int PhotoSet::size(void) {
+	return photoList.size();
 }
