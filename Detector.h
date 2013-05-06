@@ -14,7 +14,7 @@ namespace MVS {
 		Detector(void);
 		virtual ~Detector(void);
 
-		static void fillGrid(const Mat response, int h, int w, multiset<Point> &result);
+		static void fillGrid(const Mat response, int h, int w, int type, multiset<Point> &result);
 	protected:
 		static float Detector::setThreshold(std::multiset<Point>& grid);
 	};

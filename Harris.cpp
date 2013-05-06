@@ -16,7 +16,7 @@ namespace MVS {
 
 		//----------------------------------------------------------------------
 		//suppress non local max
-		Mat vvftmp = response_norm;
+		Mat vvftmp = response_norm.clone();
 		for (int y = 1; y < response_norm.rows - 1; ++y) {
 			for (int x = 1; x < response_norm.cols - 1; ++x) {
 				if (response_norm.at<float>(y,x) < response_norm.at<float>(y,x+1) ||
@@ -32,6 +32,6 @@ namespace MVS {
 		Mat dst_norm_scaled;
 		//convertScaleAbs( response_norm, dst_norm_scaled );
 		//imshow("Display window",response_norm);
-		fillGrid(response_norm, 32, 32, result);
+		fillGrid(response_norm, 32, 32, 0, result);
 	}
 };

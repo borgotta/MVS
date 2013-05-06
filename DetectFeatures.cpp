@@ -1,6 +1,9 @@
 #include "stdafx.h"
+
 #include "DetectFeatures.h"
 #include "Harris.h"
+#include "Dog.h"
+
 #include <opencv2\imgproc\imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
@@ -113,8 +116,10 @@ namespace MVS {
 			//----------------------------------------------------------------------
 			// DoG
 			{
-				//Cdog dog;
+				
 				multiset<Point> result;
+				Photo temp = m_ppss->photoList[index];
+				Dog::run(temp,1.0f, 4.0f,result);
 				/*dog.run(m_ppss->m_photos[index].getImage(m_level),
 				m_ppss->m_photos[index].Cimage::getMask(m_level),
 				m_ppss->m_photos[index].Cimage::getEdge(m_level),
@@ -122,11 +127,11 @@ namespace MVS {
 				m_ppss->m_photos[index].getHeight(m_level),
 				m_csize, firstScale, lastScale, result);*/
 
-				/*multiset<Point>::reverse_iterator rbegin = result.rbegin();      
+				multiset<Point>::reverse_iterator rbegin = result.rbegin();      
 				while (rbegin != result.rend()) {
 					m_points[index].push_back(*rbegin);
 					rbegin++;
-				}*/
+				}
 			}
 
 

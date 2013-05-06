@@ -34,7 +34,7 @@ namespace MVS {
 		return threshold;
 	}
 
-	void Detector::fillGrid(const Mat response, const int h, const int w, multiset<Point> &result){
+	void Detector::fillGrid(const Mat response, const int h, const int w, int type, multiset<Point> &result){
 		const int maxPointsGrid = 4;
 		int cols = (response.cols + h - 1) / w;
 		int rows = (response.rows + w - 1) / h;
@@ -59,7 +59,7 @@ namespace MVS {
 						Point p;
 						p.m_icoord = Vec3f(x, y, 1.0f);
 						p.m_response = response.at<float>(y,x);
-						p.m_type = 0;
+						p.m_type = type;
 
 						resultgrids[y0][x0].insert(p);
 						if (maxPointsGrid < (int)resultgrids[y0][x0].size())
@@ -70,7 +70,7 @@ namespace MVS {
 
 		for (int y = 0; y < rows; ++y)
 			for (int x = 0; x < cols; ++x) {
-				const float threshold = setThreshold(resultgrids[y][x]);      
+				const float threshold = setThreshold(resultgrids[y][x]) + 0.0001;//*1.00001;      
 				multiset<Point>::iterator begin = resultgrids[y][x].begin();
 				multiset<Point>::iterator end = resultgrids[y][x].end();
 				while (begin != end) {
