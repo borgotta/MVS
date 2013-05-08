@@ -105,25 +105,9 @@ namespace MVS {
 				multiset<Point> result;
 				Photo temp = m_ppss->photoList[index];
 
-				/*Mat response = Mat::zeros( temp.image.size(), CV_32FC1 );
-				Mat src_grey;
-				cvtColor(temp.image,src_grey,CV_BGR2GRAY );
-				cornerHarris(src_grey, response, 3, 3, sigma, BORDER_DEFAULT);
-				/// Normalizing
-				Mat response_norm;
-				normalize( response, response_norm, 0, 255, NORM_MINMAX, CV_32FC1, Mat() );
-				Mat showM;
-				convertScaleAbs( response_norm, showM );
-				imshow("Display window",showM);*/
 				//pthread_rwlock_wrlock(&m_rwlock);
 				temp1(temp,0.06,result);
 				//Harris::run(temp,0.06f,result);
-
-				/*harris.run(m_ppss->m_photos[index].getImage(m_level),
-				m_ppss->m_photos[index].Cimage::getMask(m_level),
-				m_ppss->m_photos[index].Cimage::getEdge(m_level),
-				m_ppss->m_photos[index].getWidth(m_level),
-				m_ppss->m_photos[index].getHeight(m_level), m_csize, sigma, result);*/
 
 				multiset<Point>::reverse_iterator rbegin = result.rbegin();
 				while (rbegin != result.rend()) {
@@ -136,7 +120,7 @@ namespace MVS {
 			// DoG
 			{
 				
-				/*multiset<Point> result;
+				multiset<Point> result;
 				Photo temp = m_ppss->photoList[index];
 				Dog::run(temp,1.0f, 4.0f,result);
 				
@@ -145,7 +129,7 @@ namespace MVS {
 				while (rbegin != result.rend()) {
 					m_points[index].push_back(*rbegin);
 					rbegin++;
-				}*/
+				}
 			}
 
 

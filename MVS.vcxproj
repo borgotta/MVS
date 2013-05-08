@@ -83,6 +83,8 @@
     <ClInclude Include="Detector.h" />
     <ClInclude Include="Dog.h" />
     <ClInclude Include="Harris.h" />
+    <ClInclude Include="InitialMatcher.h" />
+    <ClInclude Include="MVS.h" />
     <ClInclude Include="Patch.h" />
     <ClInclude Include="PhotoSet.h" />
     <ClInclude Include="Photo.h" />
@@ -98,6 +100,8 @@
     <ClCompile Include="Detector.cpp" />
     <ClCompile Include="Dog.cpp" />
     <ClCompile Include="Harris.cpp" />
+    <ClCompile Include="InitialMatcher.cpp" />
+    <ClCompile Include="Main.cpp" />
     <ClCompile Include="Patch.cpp" />
     <ClCompile Include="PhotoSet.cpp" />
     <ClCompile Include="Photo.cpp" />
