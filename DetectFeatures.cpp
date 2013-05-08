@@ -9,6 +9,24 @@
 
 #include <set>
 
+//temp func
+void temp1(const MVS::Photo &photo, const float k, multiset<MVS::Point> &result) {
+
+		vector<Point2f> response; 
+		Mat src_grey;
+		cvtColor(photo.image,src_grey,CV_BGR2GRAY );
+		goodFeaturesToTrack(src_grey,response,1000,0.00001,3,noArray(),3,true,0.06);
+		vector<Point2f>::iterator begin = response.begin();
+		vector<Point2f>::iterator end = response.end();
+		while(begin != end) {
+			MVS::Point p;
+						p.m_icoord = Vec3f((*begin).x, (*begin).y, 1.0f);
+						//p.m_response = *begin;
+						p.m_type = 0;
+			result.insert(p);
+		begin++;
+		}
+}
 namespace MVS {
 	DetectFeatures::DetectFeatures(void) {
 		pthread_rwlock_init(&m_rwlock, NULL);
@@ -98,7 +116,8 @@ namespace MVS {
 				convertScaleAbs( response_norm, showM );
 				imshow("Display window",showM);*/
 				//pthread_rwlock_wrlock(&m_rwlock);
-				Harris::run(temp,0.06f,result);
+				temp1(temp,0.06,result);
+				//Harris::run(temp,0.06f,result);
 
 				/*harris.run(m_ppss->m_photos[index].getImage(m_level),
 				m_ppss->m_photos[index].Cimage::getMask(m_level),
@@ -117,24 +136,20 @@ namespace MVS {
 			// DoG
 			{
 				
-				multiset<Point> result;
+				/*multiset<Point> result;
 				Photo temp = m_ppss->photoList[index];
 				Dog::run(temp,1.0f, 4.0f,result);
-				/*dog.run(m_ppss->m_photos[index].getImage(m_level),
-				m_ppss->m_photos[index].Cimage::getMask(m_level),
-				m_ppss->m_photos[index].Cimage::getEdge(m_level),
-				m_ppss->m_photos[index].getWidth(m_level),
-				m_ppss->m_photos[index].getHeight(m_level),
-				m_csize, firstScale, lastScale, result);*/
+				
 
 				multiset<Point>::reverse_iterator rbegin = result.rbegin();      
 				while (rbegin != result.rend()) {
 					m_points[index].push_back(*rbegin);
 					rbegin++;
-				}
+				}*/
 			}
 
 
 		}
 	}
 };
+

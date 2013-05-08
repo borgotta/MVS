@@ -6,6 +6,9 @@ using namespace MVS;
 Photo PhotoSet::getPhoto(int i) {
 	return photoList[i];
 }
+Mat PhotoSet::getImage(int i) {
+	return photoList[i].image;
+}
 void PhotoSet::init(const vector<string> &iL, const vector<string> &tL) {
 	int size = 0;
 	if (iL.size() > tL.size()) {
