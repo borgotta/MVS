@@ -2,6 +2,9 @@
 #include "Settings.h"
 
 namespace MVS {
+	void Settings::init(const Reconstructor& r) {
+		rec = r;
+	}
 	void Settings:: write(FileStorage& fs) const                        //Write serialization for this class
 	{
 		fs << "{" 
@@ -63,17 +66,17 @@ namespace MVS {
 			goodInput = false;
 			return;
 		}
-		if (!loadPhotos(data)) {
+		if (!loadPhotos(rec.ps)) {
 			goodInput = false;
 			return;
 		}
 		goodInput = true; //TODO implement, mock for now
 	}
-	bool Settings::loadPhotos(const PhotoSet &dt) {
+	bool Settings::loadPhotos(const PhotoSet &ps) {
 		if (imageList.empty() || txtList.empty()) {
 			return false;
 		}
-		data.init(imageList,txtList);
+		ps.init(imageList,txtList);
 		return true;
 
 	}

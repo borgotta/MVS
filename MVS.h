@@ -5,15 +5,19 @@
 #include "Point.h"
 #include "InitialMatcher.h"
 
+
 #include <iostream>
 #include <sstream>
 
 using namespace std;
 
 namespace MVS {
-	class MVS {
+	class Reconstructor {
 	public:
+		Reconstructor(void);
+		virtual ~Reconstructor(void);
 		void init(const Settings &s);
+
 		void run();
 
 		//----------------------------------------------------------------------
@@ -37,6 +41,7 @@ namespace MVS {
 		// Patch organizer
 		//CpatchOrganizerS m_pos;
 		DetectFeatures df;
+		PhotoSet ps;
 		Settings settings;
 	};
 };

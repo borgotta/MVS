@@ -2,12 +2,12 @@
 
 #include "stdafx.h"
 #include "PhotoSet.h"
+#include "MVS.h"
 
 #include <iostream>
 #include <sstream>
 
 #include <opencv2/core/core.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
 
@@ -21,7 +21,7 @@ namespace MVS {
 		Settings(void): goodInput(false) {}
 		~Settings(void);
 	public:
-
+		void init(const Reconstructor& m);
 		void write(FileStorage& fs) const;                      //Write serialization for this class
 
 		void read(const FileNode& node);                          //Read serialization for this class
@@ -46,6 +46,7 @@ namespace MVS {
 		bool goodInput;
 		int flag;
 		PhotoSet data;
+		Reconstructor rec;
 		int CPU;
 
 
