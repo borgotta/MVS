@@ -1,12 +1,23 @@
 // MVS.cpp : Defines the entry point for the console application.
 #include "stdafx.h"
-#include "MVS.h"
+
+#include "Reconstructor.h"
 
 namespace MVS {
-	Reconstructor::Reconstructor(void){
+
+	Reconstructor::Reconstructor(void) {}
+	Reconstructor::~Reconstructor(void) {
+		pthread_rwlock_destroy(&m_lock);
+
+		for (int image = 0; image < (int)m_imageLocks.size(); ++image)
+			pthread_rwlock_destroy(&m_imageLocks[image]);
+		for (int image = 0; image < (int)m_countLocks.size(); ++image)
+			pthread_rwlock_destroy(&m_countLocks[image]);
 	}
-	void Reconstructor::init(const Settings &s) {
+
+	void Reconstructor::init(Settings &s) {
 		settings = s;
+		settings.loadPhotos(ps);
 		df = DetectFeatures();
 	}
 
@@ -28,10 +39,6 @@ namespace MVS {
 		imshow( "Display window", tmp );
 		cout<<"df.m_points[15].size() = " << df.m_points[15].size();
 
-		Mat g1, g2, m_result;
-		GaussianBlur(ps.photoList[15].image,g1,Size(0,0),1.0f,0,0);
-		GaussianBlur(ps.photoList[15].image,g2,Size(0,0),4.0f,0,0);
-		m_result = g1 - g2;
 	}
 
 

@@ -2,7 +2,6 @@
 
 #include "stdafx.h"
 #include "PhotoSet.h"
-#include "MVS.h"
 
 #include <iostream>
 #include <sstream>
@@ -21,12 +20,12 @@ namespace MVS {
 		Settings(void): goodInput(false) {}
 		~Settings(void);
 	public:
-		void init(const Reconstructor& m);
+		//void init(const Reconstructor& m);
 		void write(FileStorage& fs) const;                      //Write serialization for this class
 
 		void read(const FileNode& node);                          //Read serialization for this class
 
-		bool loadPhotos(const PhotoSet &dc);
+		bool loadPhotos(PhotoSet &ps);
 
 		void interprate();
 
@@ -45,8 +44,8 @@ namespace MVS {
 		vector<string> txtList;
 		bool goodInput;
 		int flag;
-		PhotoSet data;
-		Reconstructor rec;
+		//PhotoSet data;
+		//Reconstructor rec;
 		int CPU;
 
 

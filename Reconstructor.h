@@ -1,4 +1,4 @@
-#include "opencv2/imgproc/imgproc.hpp"
+#pragma once
 
 #include "Settings.h"
 #include "DetectFeatures.h"
@@ -15,8 +15,8 @@ namespace MVS {
 	class Reconstructor {
 	public:
 		Reconstructor(void);
-		virtual ~Reconstructor(void);
-		void init(const Settings &s);
+		~Reconstructor(void);
+		void init(Settings &s);
 
 		void run();
 

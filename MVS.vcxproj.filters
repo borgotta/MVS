@@ -60,15 +60,12 @@
     <ClInclude Include="InitialMatcher.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MVS.h">
+    <ClInclude Include="Reconstructor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MVS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="camera_calibration.cpp">
@@ -108,6 +105,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Reconstructor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

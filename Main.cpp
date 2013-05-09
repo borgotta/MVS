@@ -2,7 +2,9 @@
 #include "stdafx.h"
 
 #include "Settings.h"
-#include "MVS.h"
+#include "Reconstructor.h"
+
+
 #include <iostream>
 #include <sstream>
 
@@ -15,7 +17,7 @@ int _tmain(int argc, char* argv[])
 	MVS::Settings settings;
 	MVS::Reconstructor rec;
 
-	settings.init(rec);
+	//settings.init(rec);
 
 	if (argc >= 2) {
 		path = argv[1];
@@ -38,4 +40,4 @@ int _tmain(int argc, char* argv[])
 
 	waitKey(0);
 	return 0;
-}
+};
