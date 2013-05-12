@@ -63,6 +63,12 @@
     <ClInclude Include="Reconstructor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PatchOrganizer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MatLib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -108,6 +114,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Reconstructor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PatchOrganizer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

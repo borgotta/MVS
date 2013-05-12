@@ -5,7 +5,7 @@
 
 namespace MVS {
 
-	Reconstructor::Reconstructor(void) {}
+	Reconstructor::Reconstructor(void) :im(*this), po(*this) {}
 	Reconstructor::~Reconstructor(void) {
 		pthread_rwlock_destroy(&m_lock);
 
@@ -18,14 +18,32 @@ namespace MVS {
 	void Reconstructor::init(Settings &s) {
 		settings = s;
 		settings.loadPhotos(ps);
+
+		csize = 5; //TODO добавить чтение из настроек
+		n_im = ps.size();
+
+		//----------------------------------------------------------------------
+		pthread_rwlock_init(&m_lock, NULL);
+		m_imageLocks.resize(n_im);
+		m_countLocks.resize(n_im);
+		for (int image = 0; image < n_im; ++image) {
+			pthread_rwlock_init(&m_imageLocks[image], NULL);
+			pthread_rwlock_init(&m_countLocks[image], NULL);
+		}
+
 		df = DetectFeatures();
+		//TODO
+		df.run(ps,16,16,4);
+		po.init();
+		im.init(df.m_points);
+
+
 	}
 
 	void Reconstructor::run() {
 		namedWindow( "Display window", CV_WINDOW_AUTOSIZE );// Create a window for display.
-		//imshow( "Display window", ps.getPhoto(4).image );  
 
-		df.run(ps,16,16,4);
+
 
 		Mat tmp = ps.photoList[15].image.clone();
 		for (int i = 0; i<df.m_points[15].size(); i++) {

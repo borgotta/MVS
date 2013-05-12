@@ -17,7 +17,8 @@ namespace MVS {
 		PhotoSet(void) {	}
 
 		void init(const vector<string> &iL, const vector<string> &tL);
-
+		int getWidth(const int index);
+		int getHeight(const int index);
 		int size();
 		Mat getImage(const int i);
 		Photo getPhoto(const int i);

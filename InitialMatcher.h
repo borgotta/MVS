@@ -1,6 +1,6 @@
 #pragma once
+#include "Point.h"
 
-#include "Reconstructor.h"
 
 namespace MVS {
 	class Reconstructor; //что бы это ни значило
@@ -15,7 +15,7 @@ namespace MVS {
 	protected:
 		void readPoints(const std::vector<std::vector<Point> >& points);
 	public:
-		Reconstructor& rec;
+		
 		// points in a grid. For each index, grid
 		std::vector<std::vector<std::vector<Point> > > m_ppoints;
 
@@ -24,5 +24,7 @@ namespace MVS {
 		//----------------------------------------------------------------------
 		void initialMatchThread(void);
 		static void* initialMatchThreadTmp(void* arg);
+	protected:
+		Reconstructor& rec;
 	};
 };

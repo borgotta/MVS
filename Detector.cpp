@@ -70,7 +70,7 @@ namespace MVS {
 
 		for (int y = 0; y < rows; ++y)
 			for (int x = 0; x < cols; ++x) {
-				const float threshold = setThreshold(resultgrids[y][x]) + 0.0001;//*1.00001;      
+				const float threshold = setThreshold(resultgrids[y][x]) + 0.0001f;//*1.00001;      
 				multiset<Point>::iterator begin = resultgrids[y][x].begin();
 				multiset<Point>::iterator end = resultgrids[y][x].end();
 				while (begin != end) {

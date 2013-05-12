@@ -4,6 +4,7 @@
 #include "DetectFeatures.h"
 #include "Point.h"
 #include "InitialMatcher.h"
+#include "PatchOrganizer.h"
 
 
 #include <iostream>
@@ -39,9 +40,14 @@ namespace MVS {
 		// Core members
 		//----------------------------------------------------------------------
 		// Patch organizer
-		//CpatchOrganizerS m_pos;
+		PatchOrganizer po;
 		DetectFeatures df;
 		PhotoSet ps;
 		Settings settings;
+		InitialMatcher im;
+		//number of images
+		int n_im;
+		//cell size
+		int csize;
 	};
 };

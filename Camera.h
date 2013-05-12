@@ -19,14 +19,16 @@ namespace MVS {
 
 		// Update projection matrices from intrinsics and extrinsics
 		void updateProjection(void);
-		// Update all the camera related parameters
+		// Update all the camera related parameters. 
 		void updateCamera(void);
+
+		Vec4f getOpticalCenter(void) const;
 
 		virtual void init(const std::string cname, const int maxLevel);
 		void write(const std::string file);
 
-		inline Vec3f project(const Vec4f& coord, const int level) const;
-		inline Vec3f mult(const Vec4f& coord, const int level) const;
+		//inline Vec3f project(const Vec4f& coord, const int level) const;
+		//inline Vec3f mult(const Vec4f& coord, const int level) const;
 
 		//----------------------------------------------------------------------
 		// txt file name
@@ -45,6 +47,8 @@ namespace MVS {
 		Mat m_intrinsics;;
 		Mat m_extrinsics;
 
+		Vec3f tvec;
+		Vec3f rvec;
 
 		Vec3f m_xaxis;
 		Vec3f m_yaxis;

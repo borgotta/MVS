@@ -25,3 +25,9 @@ void PhotoSet::init(const vector<string> &iL, const vector<string> &tL) {
 int PhotoSet::size(void) {
 	return photoList.size();
 }
+int PhotoSet::getWidth(const int index){
+	return photoList[index].image.cols;
+}
+int PhotoSet::getHeight(const int index) {
+	return photoList[index].image.rows;
+}
