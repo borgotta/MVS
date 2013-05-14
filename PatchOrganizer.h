@@ -6,7 +6,7 @@
 
 
 namespace MVS {
-	
+
 
 	class Reconstructor;
 	class PatchOrganizer
@@ -20,6 +20,13 @@ namespace MVS {
 		void writePLY(const std::vector<Patch>& patches,
 			const std::string filename,
 			const std::vector<Vec3i>& colors);
+
+		void clearCounts(void);
+		void clearFlags(void);
+
+		void addPatch(Patch& ppatch);
+		void removePatch(const Patch& ppatch);
+
 		//----------------------------------------------------------------------
 		// Widths of grids
 		std::vector<int> m_gwidths;

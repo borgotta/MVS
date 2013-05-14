@@ -129,19 +129,19 @@ Vec4f Camera::getOpticalCenter(void) const {
 	ans[3] = 0.0;
   }
   else {
-	Mat3 A;
-	Vec3 b;
+	Mat A = Mat::eye(3,3,CV_32F);
+	Mat b = Mat::eye(3,1,CV_32F);; //TODO maybe it is supposed to be int  & maybe it is needed to be 1x3
 	for (int y = 0; y < 3; ++y) {
 	  for (int x = 0; x < 3; ++x)
-	A[y][x] = m_projection[0][y][x];
-	  b[y] = - m_projection[0][y][3];
+	A.at<float>(y,x) = m_projection.at<float>(y,x);
+	  b.at<float>(y,0) = - m_projection.at<float>(y,3);
 	}
-	Mat3 iA;
+	Mat iA = Mat::eye(3,3,CV_32F);
 	invert(iA, A);
 	b = iA * b;
 	
 	for (int y = 0; y < 3; ++y)
-	  ans[y] = b[y];
+	  ans[y] = b.at<float>(y,0);
 	ans[3] = 1.0;
   }
   return ans;

@@ -41,10 +41,93 @@ namespace MVS {
 				fill(m_dpgrids[index].begin(), m_dpgrids[index].end(), m_MAXDEPTH);
 			}
 		}
+		cerr<<"PatchOrganizer initialized"<<endl;
 	}
 
+	void PatchOrganizer::clearCounts(void) {
+		for (int index = 0; index < rec.n_im; ++index) {
+			vector<unsigned char>::iterator begin = m_counts[index].begin();
+			vector<unsigned char>::iterator end = m_counts[index].end();
+			while (begin != end) {
+				*begin = (unsigned char)0;
+				++begin;
+			}
+		}
+	}
 
+	void PatchOrganizer::addPatch(Patch& ppatch) {
+		// First handle m_vimages
+		vector<int>::iterator bimage = ppatch.m_images.begin();
+		vector<int>::iterator eimage = ppatch.m_images.end();
+		vector<Vec2i>::iterator bgrid = ppatch.m_grids.begin();
+		while (bimage != eimage) {
+			const int index = *bimage;
+			if (rec.n_im <= index) {
+				++bimage;      ++bgrid;
+				continue;
+			}
 
+			const int index2 = (*bgrid)[1] * m_gwidths[index] + (*bgrid)[0];
+			pthread_rwlock_wrlock(&rec.m_imageLocks[index]);
+			m_pgrids[index][index2].push_back(ppatch);
+			pthread_rwlock_unlock(&rec.m_imageLocks[index]);
+			++bimage;
+			++bgrid;
+		}
+
+		// If depth, set vimages
+		if (rec.m_depth == 0)
+			return;
+
+		bimage = ppatch.m_vimages.begin();
+		eimage = ppatch.m_vimages.end();
+		bgrid = ppatch.m_vgrids.begin();
+
+		while (bimage != eimage) {
+			const int index = *bimage;
+			const int index2 = (*bgrid)[1] * m_gwidths[index] + (*bgrid)[0];
+			pthread_rwlock_wrlock(&rec.m_imageLocks[index]);
+			m_vpgrids[index][index2].push_back(ppatch);
+			pthread_rwlock_unlock(&m_fm.m_imageLocks[index]);
+			++bimage;
+			++bgrid;
+		}
+
+		updateDepthMaps(ppatch);
+	}
+	void PatchOrganizer::removePatch(const Patch& ppatch) {
+		for (int i = 0; i < (int)ppatch.m_images.size(); ++i) {
+			const int image = ppatch.m_images[i];
+			if (rec.n_im <= image)
+				continue;
+
+			const int& ix = ppatch.m_grids[i][0];
+			const int& iy = ppatch.m_grids[i][1];
+			const int index = iy * m_gwidths[image] + ix;
+			m_pgrids[image][index].erase(remove(m_pgrids[image][index].begin(),
+				m_pgrids[image][index].end(),
+				ppatch),
+				m_pgrids[image][index].end());
+		}
+
+		for (int i = 0; i < (int)ppatch.m_vimages.size(); ++i) {
+			const int image = ppatch.m_vimages[i];
+#ifdef DEBUG
+			if (rec.n_im <= image) {
+				cerr << "Impossible in removePatch. m_vimages must be targetting images" << endl;
+				exit (1);
+			}
+#endif
+
+			const int& ix = ppatch.m_vgrids[i][0];
+			const int& iy = ppatch.m_vgrids[i][1];
+			const int index = iy * m_gwidths[image] + ix;
+			m_vpgrids[image][index].erase(remove(m_vpgrids[image][index].begin(),
+				m_vpgrids[image][index].end(),
+				ppatch),
+				m_vpgrids[image][index].end());
+		}
+	}
 
 	void PatchOrganizer::writePLY(const std::vector<Patch>& patches,
 		const std::string filename) {
@@ -102,23 +185,23 @@ namespace MVS {
 				}
 				else if (mode == 2) {
 					float angle = 0.0f;
-					vector<int>::iterator bimage = (bpatch)->m_images.begin();
-					vector<int>::iterator eimage = (bpatch)->m_images.end();
+					vector<int>::const_iterator bimage = (bpatch)->m_images.begin();
+					vector<int>::const_iterator eimage = (bpatch)->m_images.end();
 
 					while (bimage != eimage) {
 						const int index = *bimage;
 						Vec4f ray = rec.ps.photoList[index].m_center - (bpatch)->m_coord;
 						ray[3] = 0.0f;
-						
+
 						unitize(ray);
-						
+
 						angle += acos(mult(ray, (bpatch)->m_normal));
 						++bimage;
 					}
 
 					angle = angle / (CV_PI / 2.0f);
 					float r, g, b;
-					Image::Cimage::gray2rgb(angle, r, g, b);
+					gray2rgb(angle, r, g, b);
 					color[0] = (int)(r * 255.0f);
 					color[1] = (int)(g * 255.0f);
 					color[2] = (int)(b * 255.0f);
@@ -160,12 +243,12 @@ namespace MVS {
 			vector<Vec3i>::const_iterator colorb = colors.begin();
 
 			while (bpatch != bend) {
-				ofstr << (*bpatch)->m_coord[0] << ' '
-					<< (*bpatch)->m_coord[1] << ' '
-					<< (*bpatch)->m_coord[2] << ' '
-					<< (*bpatch)->m_normal[0] << ' '
-					<< (*bpatch)->m_normal[1] << ' '
-					<< (*bpatch)->m_normal[2] << ' '
+				ofstr << (bpatch)->m_coord[0] << ' '
+					<< (bpatch)->m_coord[1] << ' '
+					<< (bpatch)->m_coord[2] << ' '
+					<< (bpatch)->m_normal[0] << ' '
+					<< (bpatch)->m_normal[1] << ' '
+					<< (bpatch)->m_normal[2] << ' '
 					<< *colorb << endl;
 				++bpatch;
 				++colorb;

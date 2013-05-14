@@ -55,7 +55,7 @@ namespace MVS {
 			for (int i = 0; i < m_CPU; ++i)
 				pthread_join(threads[i], NULL);
 			//----------------------------------------------------------------------
-			cerr << "done" << endl;
+			cerr << "done detecting features" << endl;
 	}
 
 	void* DetectFeatures::runThreadTmp(void* arg) {

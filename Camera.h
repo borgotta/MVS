@@ -22,8 +22,6 @@ namespace MVS {
 		// Update all the camera related parameters. 
 		void updateCamera(void);
 
-		Vec4f getOpticalCenter(void) const;
-
 		virtual void init(const std::string cname, const int maxLevel);
 		void write(const std::string file);
 

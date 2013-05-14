@@ -18,9 +18,24 @@ namespace MVS {
 	void Reconstructor::init(Settings &s) {
 		settings = s;
 		settings.loadPhotos(ps);
+		n_im = ps.size();
 
 		csize = 5; //TODO добавить чтение из настроек
-		n_im = ps.size();
+		m_nccThreshold = 0.7f; //TODO добавить чтение из настроек
+		m_minImageNumThreshold = 3; //TODO добавить чтение из настроек
+		m_sequenceThreshold = 3; //TODO добавить чтение из настроек (по умолчанию -1)
+
+		m_junit = 100;
+		// This initialization does not matter
+		m_visibleThreshold = 0.0f;
+		m_visibleThresholdLoose = 0.0f;
+
+		//m_tau = max(option.m_minImageNum * 2, min(m_num, 5));
+		m_tau = min(m_minImageNumThreshold * 2, n_im);
+
+		m_depth = 0;
+
+
 
 		//----------------------------------------------------------------------
 		pthread_rwlock_init(&m_lock, NULL);
@@ -31,12 +46,34 @@ namespace MVS {
 			pthread_rwlock_init(&m_countLocks[image], NULL);
 		}
 
+		//initialization 
 		df = DetectFeatures();
 		//TODO
 		df.run(ps,16,16,4);
 		po.init();
 		im.init(df.m_points);
 
+		//----------------------------------------------------------------------
+		// Init thresholds
+		m_angleThreshold0 = 60.0f * CV_PI / 180.0f;
+		m_angleThreshold1 = 60.0f * CV_PI / 180.0f;
+
+		m_countThreshold0 = 2;
+		m_countThreshold1 = 4;
+		m_countThreshold2 = 2;
+
+		m_neighborThreshold = 0.5f;
+		m_neighborThreshold1 = 1.0f;
+
+		m_neighborThreshold2 = 1.0f;
+
+		m_maxAngleThreshold = 10;
+
+		m_nccThresholdBefore = m_nccThreshold - 0.3f;
+
+		m_quadThreshold = 2.5f;
+
+		m_epThreshold = 2.0f;
 
 	}
 
