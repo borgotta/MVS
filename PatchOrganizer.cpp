@@ -88,7 +88,7 @@ namespace MVS {
 			const int index2 = (*bgrid)[1] * m_gwidths[index] + (*bgrid)[0];
 			pthread_rwlock_wrlock(&rec.m_imageLocks[index]);
 			m_vpgrids[index][index2].push_back(ppatch);
-			pthread_rwlock_unlock(&m_fm.m_imageLocks[index]);
+			pthread_rwlock_unlock(&rec.m_imageLocks[index]);
 			++bimage;
 			++bgrid;
 		}
@@ -128,6 +128,31 @@ namespace MVS {
 				m_vpgrids[image][index].end());
 		}
 	}
+
+	void PatchOrganizer::setScales(Patch& patch) const {
+  const float unit = rec.optim.getUnit(patch.m_images[0], patch.m_coord);
+  const float unit2 = 2.0f * unit;
+  Vec4f ray = patch.m_coord - rec.ps.photoList[patch.m_images[0]].m_center;
+  unitize(ray);
+
+  const int inum = min(rec.m_tau, (int)patch.m_images.size());
+  
+  // First compute, how many pixel difference per unit along vertical
+  //for (int i = 1; i < (int)patch.m_images.size(); ++i) {
+  for (int i = 1; i < inum; ++i) {
+    Vec3f diff = rec.ps.project(patch.m_images[i], patch.m_coord) -
+      rec.ps.project(patch.m_images[i], patch.m_coord - ray * unit2);
+	
+    patch.m_dscale += norm(diff);
+  }
+
+  // set m_dscale to the vertical distance where average pixel move is half pixel
+  //patch.m_dscale /= (int)patch.m_images.size() - 1;
+  patch.m_dscale /= inum - 1;
+  patch.m_dscale = unit2 / patch.m_dscale;
+  
+  patch.m_ascale = atan(patch.m_dscale / (unit * rec.m_wsize / 2.0f));
+}
 
 	void PatchOrganizer::writePLY(const std::vector<Patch>& patches,
 		const std::string filename) {

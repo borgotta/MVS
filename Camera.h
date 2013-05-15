@@ -25,7 +25,7 @@ namespace MVS {
 		virtual void init(const std::string cname, const int maxLevel);
 		void write(const std::string file);
 
-		//inline Vec3f project(const Vec4f& coord, const int level) const;
+		inline Vec3f project(const Vec4f& coord) const;
 		//inline Vec3f mult(const Vec4f& coord, const int level) const;
 
 		//----------------------------------------------------------------------

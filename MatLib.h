@@ -10,6 +10,7 @@ using namespace cv;
 static void gray2rgb(const float gray, float& r, float& g, float& b);
 static void setF(const MVS::Camera& lhs, const MVS::Camera& rhs,
 	  Mat& F);
+static float computeEPD(const Mat& F, const Vec3f& p0, const Vec3f& p1);
 
 inline float mult(Vec4f x, Vec4f y) {
 	return x[0]*y[0] + x[1]*y[1] + x[2]*y[2] + x[3]*y[3];
@@ -60,8 +61,7 @@ void gray2rgb(const float gray, float& r, float& g, float& b) {
 	b = 0.0f;
   }
 }
-void setF(const MVS::Camera& lhs, const MVS::Camera& rhs,
-	Mat& F) {
+void setF(const MVS::Camera& lhs, const MVS::Camera& rhs, Mat& F) {
 		
 		const vector<float> v00 = lhs.m_projection.row(0);
 		const vector<float> v01 = lhs.m_projection.row(1);
@@ -131,3 +131,15 @@ void setF(const MVS::Camera& lhs, const MVS::Camera& rhs,
 		F.at<float>(2,1) = (float)determinant(m21);
 		F.at<float>(2,2) = (float)determinant(m22);
 }
+float computeEPD(const Mat& F, const Vec3f& p0, const Vec3f& p1) {
+	Vec3f line;
+	Mat m_line = F * (Mat(p1).t()); //may be bugged
+	m_line.row(0).copyTo(line); //too
+
+	const float ftmp = sqrt(line[0] * line[0] + line[1] * line[1]);
+	if (ftmp == 0.0)
+		return 0.0;
+
+	line /= ftmp;
+	return fabs(mult(line,p0));
+};

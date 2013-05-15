@@ -22,7 +22,19 @@ namespace MVS {
 		int size();
 		Mat getImage(const int i);
 		Photo getPhoto(const int i);
+		int checkAngles(const Vec4f& coord, const std::vector<int>& indexes,
+			const float minAngle, const float maxAngle,
+			const int tau) const;
+		inline Vec3f project(const int index, const Vec4f& coord) const;
 
+		// pairwise distance based on optical center and viewing direction
+		void setDistances(void);
+		std::vector<std::vector<float> > m_distances;
 		vector<Photo> photoList;
 	};
+
+	Vec3f PhotoSet::project(const int index, const Vec4f& coord) const{
+		return photoList[index].project(coord);
+};
+
 };

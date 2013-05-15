@@ -2,6 +2,7 @@
 
 #include "Settings.h"
 #include "DetectFeatures.h"
+#include "Optimization.h"
 #include "Point.h"
 #include "InitialMatcher.h"
 #include "PatchOrganizer.h"
@@ -57,6 +58,9 @@ namespace MVS {
 		// If patches are dense or not, that is, if we use check(patch) after patch optimization
 		int m_depth;
 
+		//wsize x wsize pixel colors from each image to compute photometric consistency score
+		int m_wsize;
+		
 		//----------------------------------------------------------------------
 		// Thresholds
 		//----------------------------------------------------------------------
@@ -93,12 +97,18 @@ namespace MVS {
 		// Epipolar distance in seed generation
 		float m_epThreshold;
 
+		//visdata
+		std::vector<std::vector<int> > m_visdata;
+		std::vector<std::vector<int> > m_visdata2;
+
+
 		//----------------------------------------------------------------------
 		// Core members
 		//----------------------------------------------------------------------
 		// Patch organizer
 		PatchOrganizer po;
 		DetectFeatures df;
+		Optimization optim;
 		PhotoSet ps;
 		Settings settings;
 		InitialMatcher im;

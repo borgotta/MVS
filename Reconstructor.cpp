@@ -5,7 +5,7 @@
 
 namespace MVS {
 
-	Reconstructor::Reconstructor(void) :im(*this), po(*this) {}
+	Reconstructor::Reconstructor(void) :im(*this), po(*this), optim(*this) {}
 	Reconstructor::~Reconstructor(void) {
 		pthread_rwlock_destroy(&m_lock);
 
@@ -19,11 +19,28 @@ namespace MVS {
 		settings = s;
 		settings.loadPhotos(ps);
 		n_im = ps.size();
+		ps.setDistances();
 
 		csize = 5; //TODO добавить чтение из настроек
 		m_nccThreshold = 0.7f; //TODO добавить чтение из настроек
 		m_minImageNumThreshold = 3; //TODO добавить чтение из настроек
 		m_sequenceThreshold = 3; //TODO добавить чтение из настроек (по умолчанию -1)
+		m_wsize = 7;
+
+		//init visdata
+		
+		m_visdata.resize(n_im);
+		m_visdata2.resize(n_im);
+		for (int y = 0; y < n_im; ++y) {
+			m_visdata[y].resize(n_im);
+			for (int x = 0; x < n_im; ++x)
+				if (x == y)
+					m_visdata[y][x] = 0;
+				else {
+					m_visdata[y][x] = 1;
+					m_visdata2[y].push_back(x);
+				}
+		}
 
 		m_junit = 100;
 		// This initialization does not matter

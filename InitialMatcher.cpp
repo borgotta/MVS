@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "Reconstructor.h"
 #include "InitialMatcher.h"
+#include <numeric>
 
 namespace MVS {
 
@@ -125,10 +126,10 @@ void InitialMatcher::clear(void) {
 
 void InitialMatcher::initialMatch(const int index, const int id) {
   vector<int> indexes;
-  m_fm.m_optim.collectImages(index, indexes);
+  rec.optim.collectImages(index, indexes);
 
-  if (m_fm.m_tau < (int)indexes.size())
-	indexes.resize(m_fm.m_tau);
+  if (rec.m_tau < (int)indexes.size())
+	indexes.resize(rec.m_tau);
   
   if (indexes.empty())
 	return;  
@@ -162,15 +163,15 @@ void InitialMatcher::initialMatch(const int index, const int id) {
 	  Patch patch;
 	  patch.m_coord = vcp[i].m_coord;
 	  patch.m_normal =
-			m_fm.m_pss.m_photos[index].m_center - patch.m_coord;
+		  rec.ps.photoList[index].m_center - patch.m_coord;
 
 	  unitize(patch.m_normal);
 	  patch.m_normal[3] = 0.0;
 	  patch.m_flag = 0;
 
 		  ++rec.po.m_counts[index][index2];
-		  const int ix = ((int)floor(vcp[i].m_icoord[0] + 0.5f)) / m_fm.m_csize;
-		  const int iy = ((int)floor(vcp[i].m_icoord[1] + 0.5f)) / m_fm.m_csize;
+		  const int ix = ((int)floor(vcp[i].m_icoord[0] + 0.5f)) / rec.csize;
+		  const int iy = ((int)floor(vcp[i].m_icoord[1] + 0.5f)) / rec.csize;
 		  const int index3 = iy * rec.po.m_gwidths[vcp[i].m_itmp] + ix;
 		  if (vcp[i].m_itmp < rec.n_im)
 			++rec.po.m_counts[vcp[i].m_itmp][index3];
@@ -178,10 +179,10 @@ void InitialMatcher::initialMatch(const int index, const int id) {
 	  const int flag = initialMatchSub(index, vcp[i].m_itmp, id, patch);
 	  if (flag == 0) {
 		++count;
-		if (bestpatch.score(m_fm.m_nccThreshold) <
-				patch.score(m_fm.m_nccThreshold))
+		if (bestpatch.score(rec.m_nccThreshold) <
+				patch.score(rec.m_nccThreshold))
 		  bestpatch = patch;
-		if (m_fm.m_countThreshold0 <= count)
+		if (rec.m_countThreshold0 <= count)
 		  break;
 	  }
 		}
@@ -211,9 +212,13 @@ void InitialMatcher::collectCells(const int index0, const int index1,
 			  F);
   const int gwidth = rec.po.m_gwidths[index1];
   const int gheight = rec.po.m_gheights[index1];
+  
   Mat F_t;
   transpose(F,F_t);
-  Vec3f line =  F_t * point;
+  Vec3f line;
+  Mat m_line =  F_t * Mat(point).t(); //may be bugged
+  m_line.row(0).copyTo(line); //too
+
   if (line[0] == 0.0 && line[1] == 0.0) {
 	cerr << "Point right on top of the epipole?"
 		 << index0 << ' ' << index1 << endl;
@@ -262,9 +267,9 @@ void InitialMatcher::collectCandidates(const int index, const std::vector<int>& 
 	
 	vector<Vec2i> cells;
 	collectCells(index, indexid, point, cells);
-	Mat F; //Mat3
-	Image::setF(m_fm.m_pss.m_photos[index], m_fm.m_pss.m_photos[indexid],
-				F, m_fm.m_level);
+	Mat F(3,3,CV_32F); //Mat3
+	setF(rec.ps.photoList[index], rec.ps.photoList[indexid],
+				F);
 	
 	for (int i = 0; i < (int)cells.size(); ++i) {
 	  const int x = cells[i][0];      const int y = cells[i][1];
@@ -283,7 +288,7 @@ void InitialMatcher::collectCandidates(const int index, const std::vector<int>& 
 		}
 		  
 		const Vec3f p1(rhs.m_icoord[0], rhs.m_icoord[1], 1.0);
-		if (m_fm.m_epThreshold <= Image::computeEPD(F, p0, p1)) {
+		if (rec.m_epThreshold <= computeEPD(F, p0, p1)) {
 		  ++begin;          
 		  continue;
 		}
@@ -298,18 +303,18 @@ void InitialMatcher::collectCandidates(const int index, const std::vector<int>& 
   for (int i = 0; i < (int)vcp.size(); ++i) {
 	unproject(index, vcp[i].m_itmp, point, vcp[i], vcp[i].m_coord);
 	
-	if (rec.ps.photoList[index].m_projection[m_fm.m_level][2] *
-		vcp[i].m_coord <= 0.0)
+	if ((mult(rec.ps.photoList[index].m_projection.row(2) , // m_... было другим
+		vcp[i].m_coord)) <= 0.0)
 	  continue;
 
-	if (m_fm.m_pss.getMask(vcp[i].m_coord, m_fm.m_level) == 0 ||
-		m_fm.insideBimages(vcp[i].m_coord) == 0)
-	  continue;
+	//if (m_fm.m_pss.getMask(vcp[i].m_coord, m_fm.m_level) == 0 ||
+	//	m_fm.insideBimages(vcp[i].m_coord) == 0)
+	//  continue;
 
 	//??? from the closest
 	vcp[i].m_response =
-	  fabs(norm(vcp[i].m_coord - m_fm.m_pss.m_photos[index].m_center) -
-		   norm(vcp[i].m_coord - m_fm.m_pss.m_photos[vcp[i].m_itmp].m_center));
+		fabs(norm(vcp[i].m_coord - rec.ps.photoList[index].m_center) -
+		   norm(vcp[i].m_coord - rec.ps.photoList[vcp[i].m_itmp].m_center));
 	
 	vcptmp.push_back(vcp[i]);
   }
@@ -331,7 +336,7 @@ int InitialMatcher::canAdd(const int index, const int x, const int y) {
 	return 0;
 
   //??? critical
-  if (m_fm.m_countThreshold2 <= rec.po.m_counts[index][index2])
+  if (rec.m_countThreshold2 <= rec.po.m_counts[index][index2])
 	return 0;
   
   return 1;
@@ -340,73 +345,79 @@ int InitialMatcher::canAdd(const int index, const int x, const int y) {
 void InitialMatcher::unproject(const int index0, const int index1,
 					  const Point& p0, const Point& p1,
 					  Vec4f& coord) const{
-  Mat4 A; //Mat4
-  A[0][0] =
-	m_fm.m_pss.m_photos[index0].m_projection[m_fm.m_level][0][0] -
-	p0.m_icoord[0] * m_fm.m_pss.m_photos[index0].m_projection[m_fm.m_level][2][0];
-  A[0][1] =
-	m_fm.m_pss.m_photos[index0].m_projection[m_fm.m_level][0][1] -
-	p0.m_icoord[0] * m_fm.m_pss.m_photos[index0].m_projection[m_fm.m_level][2][1];
-  A[0][2] =
-	m_fm.m_pss.m_photos[index0].m_projection[m_fm.m_level][0][2] -
-	p0.m_icoord[0] * m_fm.m_pss.m_photos[index0].m_projection[m_fm.m_level][2][2];
-  A[1][0] =
-	m_fm.m_pss.m_photos[index0].m_projection[m_fm.m_level][1][0] -
-	p0.m_icoord[1] * m_fm.m_pss.m_photos[index0].m_projection[m_fm.m_level][2][0];
-  A[1][1] =
-	m_fm.m_pss.m_photos[index0].m_projection[m_fm.m_level][1][1] -
-	p0.m_icoord[1] * m_fm.m_pss.m_photos[index0].m_projection[m_fm.m_level][2][1];
-  A[1][2] =
-	m_fm.m_pss.m_photos[index0].m_projection[m_fm.m_level][1][2] -
-	p0.m_icoord[1] * m_fm.m_pss.m_photos[index0].m_projection[m_fm.m_level][2][2];
-  A[2][0] =
-	m_fm.m_pss.m_photos[index1].m_projection[m_fm.m_level][0][0] -
-	p1.m_icoord[0] * m_fm.m_pss.m_photos[index1].m_projection[m_fm.m_level][2][0];
-  A[2][1] =
-	m_fm.m_pss.m_photos[index1].m_projection[m_fm.m_level][0][1] -
-	p1.m_icoord[0] * m_fm.m_pss.m_photos[index1].m_projection[m_fm.m_level][2][1];
-  A[2][2] =
-	m_fm.m_pss.m_photos[index1].m_projection[m_fm.m_level][0][2] -
-	p1.m_icoord[0] * m_fm.m_pss.m_photos[index1].m_projection[m_fm.m_level][2][2];
-  A[3][0] =
-	m_fm.m_pss.m_photos[index1].m_projection[m_fm.m_level][1][0] -
-	p1.m_icoord[1] * m_fm.m_pss.m_photos[index1].m_projection[m_fm.m_level][2][0];
-  A[3][1] =
-	m_fm.m_pss.m_photos[index1].m_projection[m_fm.m_level][1][1] -
-	p1.m_icoord[1] * m_fm.m_pss.m_photos[index1].m_projection[m_fm.m_level][2][1];
-  A[3][2] =
-	m_fm.m_pss.m_photos[index1].m_projection[m_fm.m_level][1][2] -
-	p1.m_icoord[1] * m_fm.m_pss.m_photos[index1].m_projection[m_fm.m_level][2][2];
+  Mat A(4,4,CV_32F); //Mat4
+  A.at<float>(0,0) =
+	rec.ps.photoList[index0].m_projection.at<float>(0,0) -
+	p0.m_icoord[0] * rec.ps.photoList[index0].m_projection.at<float>(2,0);
+  A.at<float>(0,1) =
+	rec.ps.photoList[index0].m_projection.at<float>(0,1) -
+	p0.m_icoord[0] * rec.ps.photoList[index0].m_projection.at<float>(2,1);
+  A.at<float>(0,2) =
+	rec.ps.photoList[index0].m_projection.at<float>(0,2) -
+	p0.m_icoord[0] * rec.ps.photoList[index0].m_projection.at<float>(2,2);
+  A.at<float>(1,0) =
+	rec.ps.photoList[index0].m_projection.at<float>(1,0) -
+	p0.m_icoord[1] * rec.ps.photoList[index0].m_projection.at<float>(2,0);
+  A.at<float>(1,1) =
+	rec.ps.photoList[index0].m_projection.at<float>(1,1) -
+	p0.m_icoord[1] * rec.ps.photoList[index0].m_projection.at<float>(2,1);
+  A.at<float>(1,2) =
+	rec.ps.photoList[index0].m_projection.at<float>(1,2) -
+	p0.m_icoord[1] * rec.ps.photoList[index0].m_projection.at<float>(2,2);
+  A.at<float>(2,0) =
+	rec.ps.photoList[index1].m_projection.at<float>(0,0) -
+	p1.m_icoord[0] * rec.ps.photoList[index1].m_projection.at<float>(2,0);
+  A.at<float>(2,1) =
+	rec.ps.photoList[index1].m_projection.at<float>(0,1) -
+	p1.m_icoord[0] * rec.ps.photoList[index1].m_projection.at<float>(2,1);
+  A.at<float>(2,2) =
+	rec.ps.photoList[index1].m_projection.at<float>(0,2) -
+	p1.m_icoord[0] * rec.ps.photoList[index1].m_projection.at<float>(2,2);
+  A.at<float>(3,0) =
+	rec.ps.photoList[index1].m_projection.at<float>(1,0) -
+	p1.m_icoord[1] * rec.ps.photoList[index1].m_projection.at<float>(2,0);
+  A.at<float>(3,1) =
+	rec.ps.photoList[index1].m_projection.at<float>(1,1) -
+	p1.m_icoord[1] * rec.ps.photoList[index1].m_projection.at<float>(2,1);
+  A.at<float>(3,2) =
+	rec.ps.photoList[index1].m_projection.at<float>(1,2) -
+	p1.m_icoord[1] * rec.ps.photoList[index1].m_projection.at<float>(2,2);
 
-  Vec4 b;
+  Vec4f b;
   b[0] =
-	p0.m_icoord[0] * m_fm.m_pss.m_photos[index0].m_projection[m_fm.m_level][2][3] -
-	m_fm.m_pss.m_photos[index0].m_projection[m_fm.m_level][0][3];
+	p0.m_icoord[0] * rec.ps.photoList[index0].m_projection.at<float>(2,3) -
+	rec.ps.photoList[index0].m_projection.at<float>(0,3);
   b[1] =
-	p0.m_icoord[1] * m_fm.m_pss.m_photos[index0].m_projection[m_fm.m_level][2][3] -
-	m_fm.m_pss.m_photos[index0].m_projection[m_fm.m_level][1][3];
+	p0.m_icoord[1] * rec.ps.photoList[index0].m_projection.at<float>(2,3) -
+	rec.ps.photoList[index0].m_projection.at<float>(1,3);
   b[2] =
-	p1.m_icoord[0] * m_fm.m_pss.m_photos[index1].m_projection[m_fm.m_level][2][3] -
-	m_fm.m_pss.m_photos[index1].m_projection[m_fm.m_level][0][3];
+	p1.m_icoord[0] * rec.ps.photoList[index1].m_projection.at<float>(2,3) -
+	rec.ps.photoList[index1].m_projection.at<float>(0,3);
   b[3] =
-	p1.m_icoord[1] * m_fm.m_pss.m_photos[index1].m_projection[m_fm.m_level][2][3] -
-	m_fm.m_pss.m_photos[index1].m_projection[m_fm.m_level][1][3];
+	p1.m_icoord[1] * rec.ps.photoList[index1].m_projection.at<float>(2,3) -
+	rec.ps.photoList[index1].m_projection.at<float>(1,3);
 
-  Mat4 AT = transpose(A);
-  Mat4 ATA = AT * A;
-  Vec4 ATb = AT * b;
+  Mat AT;
+  transpose(A, AT);
+  Mat ATA = AT * A;
+  Vec4f ATb;
+  Mat m_ATb = AT * (Mat(b).t());//TODO may be bugged
+  m_ATb.row(0).copyTo(ATb);
 
-  Mat3 ATA3;
+  Mat ATA3(3,3,CV_32F); //3x3
+
   for (int y = 0; y < 3; ++y)
 	for (int x = 0; x < 3; ++x)
-	  ATA3[y][x] = ATA[y][x];
-  Vec3 ATb3;
+	  ATA3.at<float>(y,x) = ATA.at<float>(y,x);
+  Vec3f ATb3;
   for (int y = 0; y < 3; ++y)
 	ATb3[y] = ATb[y];
   
-  Mat3 iATA3;
-  invert(iATA3, ATA3);
-  Vec3 ans = iATA3 * ATb3;
+  Mat iATA3; //3x3
+  invert(ATA3, iATA3);
+  Vec3f ans;
+  Mat m_ans = iATA3 * (Mat(ATb3).t());
+  m_ans.row(0).copyTo(ans); //TODO may be bugged
   for (int y = 0; y < 3; ++y)
 	coord[y] = ans[y];
   coord[3] = 1.0f;
@@ -424,16 +435,16 @@ int InitialMatcher::initialMatchSub(const int index0, const int index1,
 
   //----------------------------------------------------------------------
   // We know that patch.m_coord is inside bimages and inside mask
-  if (m_fm.m_optim.preProcess(patch, id, 1)) {
+  if (rec.optim.preProcess(patch, id, 1)) {
 	++m_fcounts0[id];
 	return 1;
   }
   
   //----------------------------------------------------------------------  
-  m_fm.m_optim.refinePatch(patch, id, 100);
+  rec.optim.refinePatch(patch, id, 100);
 
   //----------------------------------------------------------------------
-  if (m_fm.m_optim.postProcess(patch, id, 1)) {
+  if (rec.optim.postProcess(patch, id, 1)) {
 	++m_fcounts1[id];
 	return 1;
   }

@@ -83,35 +83,39 @@ void Camera::init(const std::string cname, const int maxLevel) {
 	//m_projection.resize(maxLevel*3);
 
 
-	//updateCamera();
+	updateCamera();
 }
 
-//void Camera::updateCamera(void) {
-//
-//	//  //----------------------------------------------------------------------
-//	//  m_oaxis = m_projection[0][2];
-//	//  m_oaxis[3] = 0.0;
-//	//  const float ftmp = norm(m_oaxis);
-//	//  m_oaxis[3] = m_projection[0][2][3];
-//	//  m_oaxis /= ftmp;
-//	//
-//	//  m_center = getOpticalCenter();
-//	//
-//	//  m_zaxis = Vec3f(m_oaxis[0], m_oaxis[1], m_oaxis[2]);
-//	//  m_xaxis = Vec3f(m_projection[0][0][0],
-//	//		  m_projection[0][0][1],
-//	//		  m_projection[0][0][2]);
-//	//  m_yaxis = cross(m_zaxis, m_xaxis);
-//	//  unitize(m_yaxis);
-//	//  m_xaxis = cross(m_yaxis, m_zaxis);
-//	//  
-//	//  Vec4f xaxis = m_projection[0][0];  xaxis[3] = 0.0f;    
-//	//  Vec4f yaxis = m_projection[0][1];  yaxis[3] = 0.0f;
-//	//  float ftmp2 = (norm(xaxis) + norm(yaxis)) / 2.0f;
-//	//  if (ftmp2 == 0.0f)
-//	//	ftmp2 = 1.0f;
-//	//  m_ipscale = ftmp2;
-//}
+void Camera::updateCamera(void) {
+
+	//----------------------------------------------------------------------
+	m_projection.row(2).copyTo(m_oaxis);
+	m_oaxis[3] = 0.0;
+	const float ftmp = norm(m_oaxis);
+	m_oaxis[3] = m_projection.at<float>(2,3);
+	m_oaxis /= ftmp;
+
+	m_center = getOpticalCenter();
+
+	m_zaxis = Vec3f(m_oaxis[0], m_oaxis[1], m_oaxis[2]);
+	m_xaxis = Vec3f(m_projection.at<float>(0,0),
+		m_projection.at<float>(0,1),
+		m_projection.at<float>(0,2));
+	m_yaxis = cross(m_zaxis, m_xaxis);
+	unitize(m_yaxis);
+	m_xaxis = cross(m_yaxis, m_zaxis);
+
+	Vec4f xaxis;
+	m_projection.row(0).copyTo(xaxis);  
+	xaxis[3] = 0.0f;    
+	Vec4f yaxis;
+	m_projection.row(1).copyTo(yaxis);
+	yaxis[3] = 0.0f;
+	float ftmp2 = (norm(xaxis) + norm(yaxis)) / 2.0f;
+	if (ftmp2 == 0.0f)
+		ftmp2 = 1.0f;
+	m_ipscale = ftmp2;
+}
 Vec4f Camera::getOpticalCenter(void) const {
   // orthographic case
   Vec4f ans;
@@ -146,3 +150,29 @@ Vec4f Camera::getOpticalCenter(void) const {
   }
   return ans;
 }
+inline Vec3f Camera::project(const Vec4f& coord) const {
+  Vec3f vtmp;    
+  for (int i = 0; i < 3; ++i) {
+		Vec4f tmp;
+	  m_projection.row(i).copyTo(tmp);
+	  vtmp[i] = mult(tmp, coord); //
+  }
+
+  if (vtmp[2] <= 0.0) {
+	vtmp[0] = -0xffff;
+	vtmp[1] = -0xffff;
+	vtmp[2] = -1.0f;
+	return vtmp;
+  }
+  else
+	vtmp /= vtmp[2];
+  
+  vtmp[0] = std::max((float)(INT_MIN + 3.0f),
+			 std::min((float)(INT_MAX - 3.0f),
+				  vtmp[0]));
+  vtmp[1] = std::max((float)(INT_MIN + 3.0f),
+			 std::min((float)(INT_MAX - 3.0f),
+				  vtmp[1]));
+  
+  return vtmp;
+};

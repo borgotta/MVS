@@ -84,7 +84,10 @@
     <ClInclude Include="Dog.h" />
     <ClInclude Include="Harris.h" />
     <ClInclude Include="InitialMatcher.h" />
+    <ClInclude Include="lmcurve.h" />
+    <ClInclude Include="lmmin.h" />
     <ClInclude Include="MatLib.h" />
+    <ClInclude Include="Optimization.h" />
     <ClInclude Include="PatchOrganizer.h" />
     <ClInclude Include="Reconstructor.h" />
     <ClInclude Include="Patch.h" />
@@ -103,7 +106,10 @@
     <ClCompile Include="Dog.cpp" />
     <ClCompile Include="Harris.cpp" />
     <ClCompile Include="InitialMatcher.cpp" />
+    <ClCompile Include="lmcurve.c" />
+    <ClCompile Include="lmmin.c" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Optimization.cpp" />
     <ClCompile Include="Patch.cpp" />
     <ClCompile Include="PatchOrganizer.cpp" />
     <ClCompile Include="PhotoSet.cpp" />
