@@ -27,6 +27,7 @@ namespace MVS {
 		void addPatch(Patch& ppatch);
 		void removePatch(const Patch& ppatch);
 		void setScales(Patch& patch) const;
+		void updateDepthMaps(Patch& ppatch);
 
 		//----------------------------------------------------------------------
 		// Widths of grids

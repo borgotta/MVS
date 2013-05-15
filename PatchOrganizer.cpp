@@ -140,10 +140,10 @@ namespace MVS {
   // First compute, how many pixel difference per unit along vertical
   //for (int i = 1; i < (int)patch.m_images.size(); ++i) {
   for (int i = 1; i < inum; ++i) {
-    Vec3f diff = rec.ps.project(patch.m_images[i], patch.m_coord) -
-      rec.ps.project(patch.m_images[i], patch.m_coord - ray * unit2);
+	Vec3f diff = rec.ps.project(patch.m_images[i], patch.m_coord) -
+	  rec.ps.project(patch.m_images[i], patch.m_coord - ray * unit2);
 	
-    patch.m_dscale += norm(diff);
+	patch.m_dscale += norm(diff);
   }
 
   // set m_dscale to the vertical distance where average pixel move is half pixel
@@ -153,7 +153,39 @@ namespace MVS {
   
   patch.m_ascale = atan(patch.m_dscale / (unit * rec.m_wsize / 2.0f));
 }
+	void PatchOrganizer::updateDepthMaps(Patch& ppatch) {
+		for (int image = 0; image < rec.n_im; ++image) {
+    const Vec3f icoord = rec.ps.project(image, ppatch.m_coord);
 
+    const float fx = icoord[0] / rec.csize;
+    const int xs[2] = {(int)floor(fx), (int)ceil(fx)};
+    const float fy = icoord[1] / rec.csize;
+    const int ys[2] = {(int)floor(fy), (int)ceil(fy)};
+    
+	const float depth = mult(rec.ps.photoList[image].m_oaxis, ppatch.m_coord);
+
+    pthread_rwlock_wrlock(&rec.m_imageLocks[image]);
+    for (int j = 0; j < 2; ++j) {
+      for (int i = 0; i < 2; ++i) {
+	if (xs[i] < 0 || m_gwidths[image] <= xs[i] ||
+            ys[j] < 0 || m_gheights[image] <= ys[j])
+	  continue;
+
+        const int index = ys[j] * m_gwidths[image] + xs[i];
+	if (*m_dpgrids[image][index] == *m_MAXDEPTH)
+	  m_dpgrids[image][index] = ppatch;
+	else {
+	  const float dtmp = mult(rec.ps.photoList[image].m_oaxis,
+	    m_dpgrids[image][index].m_coord);
+	  
+	  if (depth < dtmp)
+	    m_dpgrids[image][index] = ppatch;
+	}
+      }
+    }
+    pthread_rwlock_unlock(&rec.m_imageLocks[image]);
+  }
+}
 	void PatchOrganizer::writePLY(const std::vector<Patch>& patches,
 		const std::string filename) {
 			ofstream ofstr;

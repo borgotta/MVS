@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <opencv2\core\core.hpp>
+#include <opencv2\calib3d\calib3d.hpp>
 #include "Camera.h"
 
 using namespace std;
@@ -11,6 +12,7 @@ static void gray2rgb(const float gray, float& r, float& g, float& b);
 static void setF(const MVS::Camera& lhs, const MVS::Camera& rhs,
 	  Mat& F);
 static float computeEPD(const Mat& F, const Vec3f& p0, const Vec3f& p1);
+static Vec3f proj(const Vec4f& in);
 
 inline float mult(Vec4f x, Vec4f y) {
 	return x[0]*y[0] + x[1]*y[1] + x[2]*y[2] + x[3]*y[3];
@@ -143,3 +145,8 @@ float computeEPD(const Mat& F, const Vec3f& p0, const Vec3f& p1) {
 	line /= ftmp;
 	return fabs(mult(line,p0));
 };
+Vec3f proj(const Vec4f& in) {
+	Vec3f dst;
+	convertPointsFromHomogeneous(in,dst);
+	return dst;
+}

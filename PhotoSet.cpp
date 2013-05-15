@@ -82,13 +82,13 @@ int PhotoSet::checkAngles(const Vec4f& coord, const std::vector<int>& indexes,
   vector<Vec4f> rays;  rays.resize((int)indexes.size());
   for (int i = 0; i < (int)indexes.size(); ++i) {
 	const int index = indexes[i];
-	rays[i] = m_photos[index].m_center - coord;
+	rays[i] = photoList[index].m_center - coord;
 	unitize(rays[i]);
   }
   
   for (int i = 0; i < (int)indexes.size(); ++i) {
 	for (int j = i+1; j < (int)indexes.size(); ++j) {
-	  const float dot = max(-1.0f, min(1.0f, rays[i] * rays[j]));
+	  const float dot = max(-1.0f, min(1.0f, mult(rays[i], rays[j])));
 	  const float angle = acos(dot);
 	  if (minAngle < angle && angle < maxAngle)
 		++count;

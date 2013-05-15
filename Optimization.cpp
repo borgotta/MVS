@@ -991,9 +991,9 @@ void Optimization::encode(const Vec4f& coord, const Vec4f& normal,
   encode(coord, vect, id);
   
   const int image = m_indexesT[id][0];
-  const float fx = m_xaxes[image] * proj(normal); // projects from 4D to 3D, divide by last value
-  const float fy = m_yaxes[image] * proj(normal);
-  const float fz = m_zaxes[image] * proj(normal);
+  const float fx = mult(m_xaxes[image], proj(normal)); // projects from 4D to 3D, divide by last value
+  const float fy = mult(m_yaxes[image], proj(normal));
+  const float fz = mult(m_zaxes[image], proj(normal));
 
   vect[2] = asin(max(-1.0f, min(1.0f, fy)));
   const float cosb = cos(vect[2]);
